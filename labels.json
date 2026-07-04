@@ -1,0 +1,546 @@
+{
+  "provenance": "illustrative",
+  "source": "documented regional patterns (placeholder for live OpenSky run)",
+  "labels": [
+    {
+      "lat": 59.81,
+      "lon": 32.17,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 59.68,
+      "lon": 32.84,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 59.94,
+      "lon": 31.51,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 59.55,
+      "lon": 31.62,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 59.4,
+      "lon": 30.43,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 59.67,
+      "lon": 30.97,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 59.52,
+      "lon": 29.78,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 59.94,
+      "lon": 33.4,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 58.06,
+      "lon": 27.91,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 57.68,
+      "lon": 28.05,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 57.62,
+      "lon": 26.37,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.44,
+      "lon": 32.89,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.72,
+      "lon": 31.73,
+      "reg": "Moscow region",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 45.89,
+      "lon": 28.24,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 43.68,
+      "lon": 29.11,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 45.26,
+      "lon": 27.82,
+      "reg": "\u2014",
+      "label": "DEGRADED (unresolved)",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.79,
+      "lon": 25.87,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 53.69,
+      "lon": 23.17,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.28,
+      "lon": 23.6,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.05,
+      "lon": 23.06,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.07,
+      "lon": 26.05,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.02,
+      "lon": 29.02,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.38,
+      "lon": 28.95,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.18,
+      "lon": 28.4,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 53.77,
+      "lon": 27.3,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 54.07,
+      "lon": 19.45,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 53.82,
+      "lon": 22.53,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 53.35,
+      "lon": 26.22,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 53.14,
+      "lon": 25.68,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 56.37,
+      "lon": 22.97,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 56.16,
+      "lon": 22.42,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 57.3,
+      "lon": 28.19,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 56.05,
+      "lon": 26.16,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 55.48,
+      "lon": 20.79,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 55.82,
+      "lon": 20.67,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 55.36,
+      "lon": 21.44,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 55.93,
+      "lon": 21.87,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 55.71,
+      "lon": 21.33,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 55.13,
+      "lon": 20.91,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 56.17,
+      "lon": 20.55,
+      "reg": "Kaliningrad & Baltic",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 45.14,
+      "lon": 52.05,
+      "reg": "\u2014",
+      "label": "DEGRADED (unresolved)",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.72,
+      "lon": 30.76,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.53,
+      "lon": 31.29,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 41.92,
+      "lon": 31.85,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 41.88,
+      "lon": 30.86,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.11,
+      "lon": 31.34,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.56,
+      "lon": 32.28,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.15,
+      "lon": 32.33,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.37,
+      "lon": 32.8,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.75,
+      "lon": 31.76,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 42.34,
+      "lon": 31.81,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 43.32,
+      "lon": 30.18,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 43.91,
+      "lon": 29.59,
+      "reg": "Black Sea",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    },
+    {
+      "lat": 26.01,
+      "lon": 50.52,
+      "reg": "Strait of Hormuz / Gulf",
+      "label": "JAMMING",
+      "confidence": null,
+      "reasons": [
+        "Illustrative: based on the documented dominant interference type for this region, not live per-aircraft movement analysis."
+      ]
+    }
+  ]
+}

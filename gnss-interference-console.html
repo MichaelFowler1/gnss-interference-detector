@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GNSS Interference Console — PNT Integrity Monitor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --bg:#0a131c; --panel:#0f1d2a; --panel2:#11212f; --line:#1b3346;
+    --txt:#cdd9e3; --muted:#6f8499; --faint:#445b70;
+    --clean:#1fb8a6; --elevated:#f59e0b; --jam:#e63950; --spoof:#b14dff;
+    --cyan:#38bdf8; --nodata:#2a3b4c;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);overflow:hidden}
+  #app{display:grid;grid-template-columns:1fr 360px;grid-template-rows:auto 1fr auto;height:100vh}
+
+  header{grid-column:1/3;display:flex;align-items:center;gap:14px;padding:10px 16px;
+    background:linear-gradient(180deg,#0c1825,#0a131c);border-bottom:1px solid var(--line)}
+  .brand{display:flex;flex-direction:column;line-height:1.1}
+  .brand b{font-family:var(--mono);font-size:14px;letter-spacing:.16em;color:#eaf2f8}
+  .brand span{font-size:10.5px;color:var(--muted);letter-spacing:.05em}
+  .demo-tag{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+    color:#ffd9a0;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);
+    padding:5px 10px;border-radius:4px;display:flex;align-items:center;gap:7px}
+  .demo-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--elevated);
+    box-shadow:0 0 8px var(--elevated)}
+  .btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--cyan);
+    background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);padding:6px 11px;
+    border-radius:4px;cursor:pointer}
+  .btn:hover{background:rgba(56,189,248,.16)}
+
+  #map{grid-column:1;grid-row:2;background:#0a131c}
+  .leaflet-container{background:#0a131c;font-family:var(--mono)}
+
+  aside{grid-column:2;grid-row:2;background:var(--panel);border-left:1px solid var(--line);
+    overflow-y:auto;display:flex;flex-direction:column}
+  .sec{padding:13px 15px;border-bottom:1px solid var(--line)}
+  .sec h2{margin:0 0 9px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    color:var(--muted);text-transform:uppercase;font-weight:600}
+
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:8px 10px}
+  .stat .n{font-family:var(--mono);font-size:19px;font-weight:600}
+  .stat .l{font-size:10px;color:var(--muted);letter-spacing:.03em}
+  .stat.jam .n{color:var(--jam)} .stat.spoof .n{color:var(--spoof)}
+  .stat.clean .n{color:var(--clean)} .stat.elev .n{color:var(--elevated)}
+
+  .feed{display:flex;flex-direction:column;gap:6px;max-height:none}
+  .det{background:var(--panel2);border:1px solid var(--line);border-left-width:3px;
+    border-radius:4px;padding:8px 10px;cursor:pointer;transition:background .12s}
+  .det:hover{background:#16293a}
+  .det.jam{border-left-color:var(--jam)} .det.spoof{border-left-color:var(--spoof)}
+  .det .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .det .cls{font-family:var(--mono);font-size:10px;letter-spacing:.1em;font-weight:600}
+  .det.jam .cls{color:var(--jam)} .det.spoof .cls{color:var(--spoof)}
+  .det .sev{font-family:var(--mono);font-size:13px;font-weight:600}
+  .det .reg{font-size:11.5px;color:var(--txt);margin-top:2px}
+  .det .meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px}
+  .empty{font-size:11.5px;color:var(--faint);font-style:italic;padding:4px 0}
+
+  #inspector .ph{font-size:11.5px;color:var(--faint);font-style:italic}
+  .insp-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .insp-chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
+    padding:3px 8px;border-radius:4px}
+  .chip-jam{color:#ffd2d8;background:rgba(230,57,80,.18);border:1px solid rgba(230,57,80,.4)}
+  .chip-spoof{color:#ecd6ff;background:rgba(177,77,255,.16);border:1px solid rgba(177,77,255,.4)}
+  .chip-clean{color:#c4f5ee;background:rgba(31,184,166,.14);border:1px solid rgba(31,184,166,.4)}
+  .chip-elev{color:#ffe6bf;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.4)}
+  .chip-nodata{color:#aebfce;background:rgba(68,91,112,.2);border:1px solid var(--faint)}
+  .insp-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+  .insp-grid div{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
+  .insp-grid .k{font-size:9.5px;color:var(--muted);letter-spacing:.04em}
+  .insp-grid .v{font-family:var(--mono);font-size:14px;font-weight:600;margin-top:1px}
+  .reasons{list-style:none;padding:0;margin:8px 0 0}
+  .reasons li{font-size:11.5px;line-height:1.45;color:var(--txt);padding-left:16px;position:relative;margin-bottom:5px}
+  .reasons li::before{content:"▸";position:absolute;left:0;color:var(--cyan)}
+
+  footer{grid-column:1/3;grid-row:3;display:flex;align-items:center;gap:14px;padding:9px 16px;
+    background:#0c1825;border-top:1px solid var(--line)}
+  .play{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);
+    color:var(--cyan);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .play:hover{background:#16293a}
+  .scrub{flex:1;display:flex;flex-direction:column;gap:3px}
+  .scrub .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted)}
+  input[type=range]{width:100%;accent-color:var(--cyan);height:4px}
+  .tnow{color:var(--cyan)}
+
+  .legend{position:absolute;left:12px;bottom:12px;z-index:500;background:rgba(12,24,37,.86);
+    border:1px solid var(--line);border-radius:6px;padding:9px 11px;font-family:var(--mono);font-size:10px;
+    backdrop-filter:blur(4px)}
+  .legend .row{display:flex;align-items:center;gap:7px;margin:3px 0;color:var(--muted)}
+  .sw{width:13px;height:13px;border-radius:3px;border:1px solid rgba(255,255,255,.15)}
+
+  .modal-bg{position:fixed;inset:0;background:rgba(4,9,14,.72);z-index:1000;display:none;
+    align-items:center;justify-content:center;padding:20px}
+  .modal-bg.on{display:flex}
+  .modal{max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:22px 24px;max-height:85vh;overflow-y:auto}
+  .modal h3{margin:0 0 4px;font-family:var(--mono);letter-spacing:.06em;font-size:15px}
+  .modal p,.modal li{font-size:13px;line-height:1.55;color:var(--txt)}
+  .modal .sub{color:var(--muted);font-size:12px;margin-bottom:14px}
+  .modal ol{padding-left:18px} .modal li{margin-bottom:9px}
+  .modal code{font-family:var(--mono);font-size:12px;background:var(--panel2);padding:1px 5px;
+    border-radius:3px;color:var(--cyan)}
+  .modal .close{float:right;cursor:pointer;color:var(--muted);font-size:18px;line-height:1}
+
+  @media (max-width:840px){
+    #app{grid-template-columns:1fr;grid-template-rows:auto 52vh 1fr auto}
+    #map{grid-column:1;grid-row:2}
+    aside{grid-column:1;grid-row:3;border-left:none;border-top:1px solid var(--line)}
+    .demo-tag{font-size:9px;padding:4px 7px}
+    header .btn{display:none}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand">
+      <b>GNSS INTERFERENCE CONSOLE</b>
+      <span>PNT integrity monitor · derived from aircraft navigation-integrity reports</span>
+    </div>
+    <button class="btn" id="dataBtn">CONNECT REAL DATA</button>
+    <div class="demo-tag">DEMONSTRATION DATA</div>
+  </header>
+
+  <div id="map">
+    <div class="legend">
+      <div class="row"><span class="sw" style="background:var(--clean)"></span>Clean fix</div>
+      <div class="row"><span class="sw" style="background:var(--elevated)"></span>Elevated</div>
+      <div class="row"><span class="sw" style="background:var(--jam)"></span>Jamming</div>
+      <div class="row"><span class="sw" style="background:var(--spoof)"></span>Spoofing</div>
+      <div class="row"><span class="sw" style="background:var(--nodata)"></span>No data</div>
+    </div>
+  </div>
+
+  <aside>
+    <div class="sec">
+      <h2>Theater status · <span id="tlabel" class="tnow">NOW</span></h2>
+      <div class="stats">
+        <div class="stat jam"><div class="n" id="s-jam">0</div><div class="l">Jamming cells</div></div>
+        <div class="stat spoof"><div class="n" id="s-spoof">0</div><div class="l">Spoofing cells</div></div>
+        <div class="stat elev"><div class="n" id="s-elev">0</div><div class="l">Elevated cells</div></div>
+        <div class="stat clean"><div class="n" id="s-ac">0</div><div class="l">Aircraft sampled</div></div>
+      </div>
+    </div>
+
+    <div class="sec" id="inspector">
+      <h2>Cell inspector</h2>
+      <div class="ph">Tap any cell on the map to see why it was classified.</div>
+    </div>
+
+    <div class="sec" style="flex:1">
+      <h2>Active detections</h2>
+      <div class="feed" id="feed"></div>
+    </div>
+  </aside>
+
+  <footer>
+    <button class="play" id="play">▶</button>
+    <div class="scrub">
+      <div class="row"><span id="tstart">T-11h</span><span class="tnow" id="tcur">NOW</span><span>NOW</span></div>
+      <input type="range" id="time" min="0" max="11" value="11" step="1" />
+    </div>
+  </footer>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <span class="close" id="modalClose">✕</span>
+    <h3>Connecting real data</h3>
+    <p class="sub">This prototype runs the full detection engine on representative data modeled on real mid-2026 hotspots. Here is exactly how to feed it live signals, easiest first.</p>
+    <ol>
+      <li><b>GPSJam daily dataset (start here).</b> John Wiseman publishes a daily <code>H3</code>-hexagon feed of "% bad aircraft" per cell under CC-BY. Drop it into <code>loadCells()</code> in place of the synthetic generator — the scoring, thresholds and feed all keep working. Daily resolution, zero auth.</li>
+      <li><b>OpenSky live positions.</b> Free for non-commercial use (OAuth2 client-credentials since Mar 2026). Gives you live aircraft positions to bin into cells — but <b>not</b> the integrity field on its own.</li>
+      <li><b>Decode integrity yourself with <code>pyModeS</code>.</b> Pull NIC / NACp straight out of raw ADS-B messages at the bit level. This is the "I went deeper" chapter — it proves you understand the protocol, not just the API.</li>
+      <li><b>ADS-B Exchange.</b> Exposes raw integrity fields (it's what GPSJam is built on), but live API access has moved toward paid tiers — check current terms.</li>
+    </ol>
+    <p class="sub" style="margin:6px 0 0">The classification logic — jamming vs spoofing — is identical whichever source you wire in. That logic is the part that transfers to the job.</p>
+  </div>
+</div>
+
+<script>
+/* ===========================================================================
+   GNSS INTERFERENCE CONSOLE
+   The detection logic below is real. The aircraft counts are synthetic,
+   modeled on documented mid-2026 hotspots, so the engine has something to
+   chew on before you connect a live feed (see "Connect real data").
+   =========================================================================== */
+
+// ---- Map -------------------------------------------------------------------
+const map = L.map('map',{zoomControl:true,attributionControl:false,minZoom:3,maxZoom:7})
+  .setView([42.0,33.0],4);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  subdomains:'abcd',maxZoom:19
+}).addTo(map);
+const canvasRenderer = L.canvas({padding:0.5});
+
+// ---- Documented hotspot regions (geography is real; intensities are modeled)
+const REGIONS = [
+  {name:'Eastern Mediterranean', lat:34.0, lon:34.6, r:3.4, type:'spoof', base:.82, grow:.010,
+   note:'Persistent spoofing across Cyprus / Lebanon / Israel sectors since late 2023.'},
+  {name:'Nile Delta & Sinai',    lat:30.6, lon:33.2, r:2.3, type:'spoof', base:.55, grow:.020,
+   note:'Spoofing bleed-over along the eastern Med corridor.'},
+  {name:'Kaliningrad & Baltic',  lat:54.8, lon:20.6, r:2.7, type:'jam',   base:.66, grow:.028,
+   note:'Jamming in Kaliningrad-adjacent Baltic airspace.'},
+  {name:'Black Sea',             lat:44.2, lon:36.5, r:3.2, type:'jam',   base:.72, grow:.035,
+   note:'Frequent interference; aircraft often fall back to MLAT tracking.'},
+  {name:'Strait of Hormuz / Gulf',lat:26.7,lon:56.3, r:2.7, type:'jam',   base:.68, grow:.045,
+   note:'Gulf jamming; 1,100+ ships reported affected in a single day, Mar 2026.'},
+  {name:'Apennine training range',lat:39.6,lon:16.2, r:1.5, type:'benign',base:.30, grow:.0,
+   note:'Benign: sporadic single-aircraft degradation from trainer maneuvers, not jamming.'}
+];
+
+// ---- Deterministic noise so each cell/timestep is stable across renders ----
+function hash(x,y,t){let h=(x*73856093)^(y*19349663)^(t*83492791);h=(h^(h>>>13))*1274126177;
+  return ((h^(h>>>16))>>>0)/4294967295;}
+
+const TSTEPS=12;
+function intensity(reg,t){ // 0..1, grows toward "now"
+  if(reg.type==='benign') return reg.base;
+  return Math.min(.97, reg.base + reg.grow*t);
+}
+function falloff(d,r){const x=d/r;return Math.exp(-x*x);}
+
+// ---- Build a hex grid in lat/lon (lon spacing corrected by cos(lat)) -------
+const BOUNDS={latMin:23,latMax:58,lonMin:11,lonMax:61};
+const R=1.15;                         // hex size, degrees latitude
+const cells=[];
+(function buildGrid(){
+  const vstep=R*1.5, hstep=R*Math.sqrt(3);
+  let row=0;
+  for(let lat=BOUNDS.latMin; lat<=BOUNDS.latMax; lat+=vstep, row++){
+    const lonScale=1/Math.cos(lat*Math.PI/180);
+    const off=(row%2)? hstep*lonScale/2 : 0;
+    for(let lon=BOUNDS.lonMin-off; lon<=BOUNDS.lonMax; lon+=hstep*lonScale){
+      const verts=[];
+      for(let k=0;k<6;k++){
+        const a=Math.PI/180*(60*k-30);
+        verts.push([lat+R*Math.sin(a), lon+R*Math.cos(a)*lonScale]);
+      }
+      cells.push({lat,lon,verts,row,col:cells.length,poly:null,cur:null});
+    }
+  }
+})();
+
+// ---- THE DETECTOR ----------------------------------------------------------
+// For each cell/timestep we model how many aircraft passed through, how many
+// lost their GPS fix (jamming signature) and how many reported physically
+// impossible position jumps (spoofing signature) — then classify.
+function evaluate(cell,t){
+  // nearest region + per-type influence
+  let jam=0, spoof=0, nearest=null, nd=1e9;
+  for(const reg of REGIONS){
+    const dy=cell.lat-reg.lat, dx=(cell.lon-reg.lon)*Math.cos(cell.lat*Math.PI/180);
+    const d=Math.hypot(dy,dx);
+    if(d<nd){nd=d;nearest=reg;}
+    const inf=intensity(reg,t)*falloff(d,reg.r);
+    if(reg.type==='jam')    jam=Math.max(jam,inf);
+    if(reg.type==='spoof')  spoof=Math.max(spoof,inf);
+    if(reg.type==='benign' && inf>0.04){ // benign adds a touch of low-count noise
+      jam=Math.max(jam, inf*0.25*hash(cell.col,7,t));
+    }
+  }
+  const n1=hash(cell.col,1,t), n2=hash(cell.col,2,t), n3=hash(cell.col,3,t);
+
+  // baseline traffic — busier over Europe, sparser over sea/desert edges
+  let traffic=Math.round(6+38*n1*(0.5+0.5*Math.cos((cell.lat-45)*Math.PI/180)));
+
+  // jamming blinds the sensor: heavy jamming thins ADS-B reports, and can black
+  // an area out entirely — the map is blindest exactly where it's worst.
+  const blackout = jam>0.8 && n2<(jam-0.78)*2.2;
+  if(blackout) return {n:0,good:0,bad:0,jumps:0,score:0,cls:'nodata',reg:nearest,
+                       reasons:['No aircraft reporting in-cell — consistent with airspace closure or jamming dense enough to suppress ADS-B itself.','Absence of data over a known hotspot is itself an indicator.']};
+  if(jam>0.5) traffic=Math.max(2,Math.round(traffic*(1-0.55*jam)));
+
+  // signatures
+  const bad   = Math.round(traffic * jam   * (0.55+0.35*n2));      // lost fix → jamming
+  const jumps = Math.round(traffic * spoof * (0.45+0.45*n3));      // impossible jumps → spoofing
+  const good  = Math.max(0, traffic-bad);
+
+  const denoised = traffic>0 ? Math.max(0,bad-1)/Math.max(1,good+bad) : 0; // GPSJam-style
+  const jumpRate = traffic>0 ? Math.min(1,jumps/traffic) : 0;
+  const score=Math.max(denoised,jumpRate);
+
+  let cls;
+  if(score<0.12) cls='clean';
+  else if(score<0.30) cls='elevated';
+  else if(jumpRate>=denoised*0.9 && jumpRate>0.20) cls='spoof';
+  else cls='jam';
+
+  const lowConf = traffic<6;
+  const reasons=[];
+  if(cls==='jam'){
+    reasons.push(`${bad}/${good+bad} aircraft (${Math.round(denoised*100)}%) lost their GPS fix — the signature of jamming.`);
+    reasons.push('Few or no impossible-position reports, so receivers are being denied a fix rather than fed a false one.');
+  }else if(cls==='spoof'){
+    reasons.push(`${jumps} aircraft reported physically impossible position jumps while still claiming a confident fix — the signature of spoofing.`);
+    reasons.push('Spoofing feeds a fake signal, so integrity stays "good" even as tracks become impossible.');
+  }else if(cls==='elevated'){
+    reasons.push(`Degradation present (${Math.round(score*100)}%) but below the confident-detection threshold.`);
+    reasons.push('Could be early-stage interference, edge of a hotspot, or avionics noise — watch for growth.');
+  }else{
+    reasons.push('Aircraft report clean, consistent navigation integrity. No interference signature.');
+  }
+  if(lowConf) reasons.push(`⚠ Low confidence: only ${traffic} aircraft sampled. The −1 denoising term suppresses false alarms in thin cells.`);
+
+  return {n:traffic,good,bad,jumps,denoised,jumpRate,score,cls,reg:nearest,lowConf,reasons};
+}
+
+// ---- Rendering -------------------------------------------------------------
+const STYLE={
+  clean:{color:'#1fb8a6'}, elevated:{color:'#f59e0b'},
+  jam:{color:'#e63950'},   spoof:{color:'#b14dff'}, nodata:{color:'#2a3b4c'}
+};
+function cellStyle(ev){
+  const base=STYLE[ev.cls].color;
+  if(ev.cls==='nodata') return {color:'#33485c',weight:.5,fillColor:base,fillOpacity:.12};
+  if(ev.cls==='clean')  return {color:'#16302c',weight:.5,fillColor:base,fillOpacity:.10};
+  const op=ev.cls==='elevated'?0.34:Math.min(.78,0.4+ev.score*0.5);
+  return {color:base,weight:1,fillColor:base,fillOpacity:op};
+}
+
+let selected=null;
+function draw(t){
+  let jamC=0,spoofC=0,elevC=0,acTot=0;
+  for(const c of cells){
+    const ev=evaluate(c,t); c.cur=ev; acTot+=ev.n;
+    if(ev.cls==='jam')jamC++; else if(ev.cls==='spoof')spoofC++; else if(ev.cls==='elevated')elevC++;
+    const st=cellStyle(ev);
+    if(!c.poly){
+      c.poly=L.polygon(c.verts,{renderer:canvasRenderer,...st}).addTo(map);
+      c.poly.on('click',()=>{selected=c;inspect(c);});
+    }else c.poly.setStyle(st);
+  }
+  document.getElementById('s-jam').textContent=jamC;
+  document.getElementById('s-spoof').textContent=spoofC;
+  document.getElementById('s-elev').textContent=elevC;
+  document.getElementById('s-ac').textContent=acTot.toLocaleString();
+  buildFeed(t);
+  if(selected) inspect(selected);
+}
+
+function buildFeed(){
+  const dets=cells.filter(c=>c.cur&&(c.cur.cls==='jam'||c.cur.cls==='spoof'))
+    .sort((a,b)=>b.cur.score-a.cur.score).slice(0,14);
+  const feed=document.getElementById('feed');
+  if(!dets.length){feed.innerHTML='<div class="empty">No confident detections this hour.</div>';return;}
+  feed.innerHTML='';
+  for(const c of dets){
+    const ev=c.cur, d=document.createElement('div');
+    d.className='det '+ev.cls;
+    d.innerHTML=`<div class="top"><span class="cls">${ev.cls==='jam'?'JAMMING':'SPOOFING'}</span>
+      <span class="sev">${Math.round(ev.score*100)}%</span></div>
+      <div class="reg">${ev.reg.name}</div>
+      <div class="meta">${ev.cls==='jam'?ev.bad+' lost fix':ev.jumps+' impossible jumps'} · ${ev.n} ac · ${c.lat.toFixed(1)}°N ${c.lon.toFixed(1)}°E</div>`;
+    d.onclick=()=>{selected=c;inspect(c);map.panTo([c.lat,c.lon]);};
+    feed.appendChild(d);
+  }
+}
+
+function inspect(c){
+  const ev=c.cur, box=document.getElementById('inspector');
+  const chip={jam:['chip-jam','JAMMING'],spoof:['chip-spoof','SPOOFING'],
+    clean:['chip-clean','CLEAN'],elevated:['chip-elev','ELEVATED'],nodata:['chip-nodata','NO DATA']}[ev.cls];
+  box.innerHTML=`<h2>Cell inspector</h2>
+    <div class="insp-head"><span class="insp-chip ${chip[0]}">${chip[1]}</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--muted)">${c.lat.toFixed(2)}°N ${c.lon.toFixed(2)}°E</span></div>
+    <div style="font-size:12px;color:var(--txt)">${ev.reg.name}</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4">${ev.reg.note}</div>
+    <div class="insp-grid">
+      <div><div class="k">Aircraft sampled</div><div class="v">${ev.n}</div></div>
+      <div><div class="k">Interference score</div><div class="v">${Math.round(ev.score*100)}%</div></div>
+      <div><div class="k">Lost GPS fix</div><div class="v" style="color:var(--jam)">${ev.bad}</div></div>
+      <div><div class="k">Impossible jumps</div><div class="v" style="color:var(--spoof)">${ev.jumps}</div></div>
+    </div>
+    <h2 style="margin-top:4px">Why</h2>
+    <ul class="reasons">${ev.reasons.map(r=>`<li>${r}</li>`).join('')}</ul>`;
+}
+
+// ---- Time controls ---------------------------------------------------------
+const slider=document.getElementById('time');
+const tcur=document.getElementById('tcur'), tlabel=document.getElementById('tlabel');
+const tstart=document.getElementById('tstart');
+tstart.textContent=`T-${TSTEPS-1}h`;
+function label(t){return t===TSTEPS-1?'NOW':`T-${TSTEPS-1-t}h`;}
+function setT(t){slider.value=t;const l=label(t);tcur.textContent=l;tlabel.textContent=l;draw(t);}
+slider.addEventListener('input',e=>setT(+e.target.value));
+
+let playing=false,timer=null;
+const playBtn=document.getElementById('play');
+playBtn.onclick=()=>{
+  playing=!playing; playBtn.textContent=playing?'⏸':'▶';
+  if(playing){timer=setInterval(()=>{
+    let t=(+slider.value+1)%TSTEPS; setT(t);
+    if(t===TSTEPS-1){playing=false;playBtn.textContent='▶';clearInterval(timer);}
+  },900);}else clearInterval(timer);
+};
+
+// ---- Modal -----------------------------------------------------------------
+const modal=document.getElementById('modal');
+document.getElementById('dataBtn').onclick=()=>modal.classList.add('on');
+document.getElementById('modalClose').onclick=()=>modal.classList.remove('on');
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove('on');};
+
+// ---- Go --------------------------------------------------------------------
+setT(TSTEPS-1);
+</script>
+</body>
+</html>
