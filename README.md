@@ -3,6 +3,13 @@
 Detect and classify GPS jamming and spoofing over a region, using only free,
 public aircraft data — no special hardware.
 
+![RF interference classifier](cognitive-ew/docs/hero.png)
+
+> **Two complementary layers.** A **GNSS jamming/spoofing detector** built from
+> public aircraft data (this page), and a companion **cognitive-EW RF classifier**
+> that identifies jamming *type* straight from raw radio I/Q — pictured above and
+> documented in [RF jamming classifier](#rf-jamming-classifier-cognitive-ew) below.
+
 Modern aircraft broadcast how confident they are in their own GPS position. When
 many aircraft over the same area report degraded position quality, something on
 the ground is interfering with GNSS. This project turns that crowd of aircraft
@@ -122,6 +129,50 @@ Credit both if you publish anything built on this.
   detection.
 - **Validation against ground truth.** Cross-check detected events against
   published NOTAMs and reporting for known jamming/spoofing incidents.
+
+---
+
+## RF jamming classifier (`cognitive-ew/`)
+
+A companion, GPU-accelerated edge-AI node that works one layer lower — on raw
+radio I/Q rather than aircraft reports — and classifies the RF spectrum in real
+time as **clear**, **barrage-jammed**, or **tone-jammed**.
+
+![Three spectrum states, one model](cognitive-ew/docs/montage.png)
+
+**Pipeline:** raw I/Q → GPU STFT → CNN (`CognitiveEWNet`) → jamming verdict.
+
+| Class | Meaning |
+|---|---|
+| `CLEAR / NONE` | Nominal link (Doppler, multipath fading, thermal noise) |
+| `JAMMED / BARRAGE` | Wideband noise — raises the whole noise floor |
+| `JAMMED / TONE` | Narrowband continuous-wave — a sharp spectral spike |
+
+**Components** (all in [`cognitive-ew/`](cognitive-ew/)):
+- `realistic_rf_env.py` — synthesizes QPSK I/Q with channel impairments + jamming profiles.
+- `train_pipeline.py` / `train_and_save.py` — define and train `CognitiveEWNet`; write `cognitive_ew_model.pth`.
+- `inference_node.py` — FastAPI service (`POST /predict`), STFT + inference on the GPU.
+- `live_server.py` — live browser dashboard (spectrogram, PSD, rolling accuracy).
+- `make_hero.py` / `make_montage.py` — regenerate the two images above.
+
+**Run it:**
+
+```powershell
+cd cognitive-ew
+python -m venv .venv; .venv\Scripts\activate
+pip install torch fastapi uvicorn numpy scipy matplotlib requests
+python inference_node.py     # REST API      -> http://127.0.0.1:8000/docs
+python test_client.py        # streams a jammed signal, prints the verdict
+python live_server.py        # live dashboard -> http://127.0.0.1:8010/
+```
+
+Example `POST /predict` response:
+
+```json
+{ "status": "JAMMED", "type": "TONE", "confidence": 0.9801, "hardware_accelerated": true }
+```
+
+An NVIDIA GPU is used automatically when available; otherwise it falls back to CPU.
 
 ---
 
